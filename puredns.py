@@ -1,8 +1,8 @@
-from urllib import request
-import re
-from urllib.error import URLError
 import os
+import re
 from optparse import OptionParser
+from urllib import request
+from urllib.error import URLError
 
 
 def parse_host_to_dict():
@@ -17,7 +17,7 @@ def parse_host_to_dict():
         print('Downloading Hosts...')
         response = request.urlopen(HOST_URL)
         file = response.read().decode('utf8')
-        with open(filename,'w+') as hosts:
+        with open(filename, 'w+') as hosts:
             hosts.write(file)
         print('Cached to ' + os.getcwd() + os.sep + filename)
     except URLError as e:
@@ -25,7 +25,7 @@ def parse_host_to_dict():
 
     hosts_dict = {}
 
-    with open(filename,'r') as hosts:
+    with open(filename, 'r') as hosts:
         hosts = hosts.readlines()
         start = False
         new_host = False
@@ -101,14 +101,12 @@ class DNSWriter(object):
     def __init__(self):
         self.prefix = 'write_to_'
 
-
     def write(self, dns_dict, option_type):
-        if hasattr(self, self.prefix+option_type):
-            writer = getattr(self, self.prefix+option_type)
+        if hasattr(self, self.prefix + option_type):
+            writer = getattr(self, self.prefix + option_type)
             writer(dns_dict)
         else:
             print(option_type, 'not implemented yet')
-
 
     def write_to_dnsmasq(self, dns_dict):
         file_name = 'dnsmasq.conf'
@@ -132,11 +130,13 @@ def main(option_type):
     writer = DNSWriter()
     writer.write(hosts_dict, option_type)
 
+
 if __name__ == '__main__':
     type_set = ['dnsmasq']
     type_default = type_set[0]
     parser = OptionParser("usage: %prog [options]")
-    parser.add_option("-t", "--type", help="choose type of dns configure(default is "+ type_default +"): "+ str(type_set) +"")
+    parser.add_option("-t", "--type",
+                      help="choose type of dns configure(default is " + type_default + "): " + str(type_set) + "")
     (options, args) = parser.parse_args()
     option_type = options.type
     if option_type is not None and option_type in type_set:
@@ -145,7 +145,3 @@ if __name__ == '__main__':
         main(type_default)
     else:
         parser.print_help()
-
-
-
-
